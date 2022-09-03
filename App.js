@@ -1,29 +1,58 @@
 import React from "react"
 import {
-  Box,
-  Heading,
-  Center,
-  NativeBaseProvider
+  NativeBaseProvider,
+  useTheme
 } from "native-base"
 import { NavigationContainer } from "@react-navigation/native"
-import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { GlobalContext, globals } from "./GlobalContext"
+import { Ionicons } from "@expo/vector-icons"
 
-import AddProducts from "./pages/AddProducts"
-import Page2 from "./pages/Page2"
-import Page3 from "./pages/Page3"
+import SetupDB from "./pages/SetupDB"
+import ListProduct from "./pages/ListProduct"
+import AddProduct from "./pages/AddProduct"
+import EditProduct from "./pages/EditProduct"
+import QueryBox from "./pages/QueryBox"
 
-const Stack = createNativeStackNavigator()
+const Tab = createBottomTabNavigator()
+const screenOptions = ({ route }) => {
+  const { colors } = useTheme()
+
+  return {
+    tabBarIcon: ({ focused, color, size }) => {
+      const routeIcons = {
+        "AddProduct" : ["add","add-outline"],
+        "ListProduct": ["list","list-outline"],
+        "QueryBox"   : ["server","server-outline"],
+      }
+
+      const index = focused ? 0 : 1
+      const name = route.name ? route.name : ""
+      const icon = routeIcons[name][index]
+
+      return <Ionicons name={icon} size={size} color={color} />;
+    },
+    tabBarActiveTintColor: colors["primary"]["500"],
+    tabBarInactiveTintColor: 'gray',
+  }
+}
 
 export default function App() {
   return (
     <NativeBaseProvider>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="AddProducts">
-          <Stack.Screen name="AddProducts" component={AddProducts} />
-          <Stack.Screen name="Page2" component={Page2} />
-          <Stack.Screen name="Page3" component={Page3} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <GlobalContext.Provider value={globals}>
+        <NavigationContainer>
+          <Tab.Navigator  
+            initialRouteName="SetupDB"
+            screenOptions={screenOptions}>
+            <Tab.Screen name="SetupDB" options={{headerShown: false, tabBarButton: (props) => false}} component={SetupDB} />
+            <Tab.Screen name="ListProduct" options={{headerShown: false}} component={ListProduct} />
+            <Tab.Screen name="AddProduct" options={{headerShown: false}} component={AddProduct} />
+            <Tab.Screen name="EditProduct" options={{headerShown: false, tabBarButton: (props) => false}} component={EditProduct} />
+            <Tab.Screen name="QueryBox" options={{headerShown: false}} component={QueryBox} />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </GlobalContext.Provider>
     </NativeBaseProvider>
   )
 }
