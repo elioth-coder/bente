@@ -1,58 +1,82 @@
-import React from "react"
-import {
-  NativeBaseProvider,
-  useTheme
-} from "native-base"
-import { NavigationContainer } from "@react-navigation/native"
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { GlobalContext, globals } from "./GlobalContext"
-import { Ionicons } from "@expo/vector-icons"
+import React from "react";
+import { NativeBaseProvider, useTheme } from "native-base";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
 
-import SetupDB from "./pages/SetupDB"
-import ListProduct from "./pages/ListProduct"
-import AddProduct from "./pages/AddProduct"
-import EditProduct from "./pages/EditProduct"
-import QueryBox from "./pages/QueryBox"
+import SetupDB from "./pages/SetupDB";
+import ListProduct from "./pages/ListProduct";
+import AddProduct from "./pages/AddProduct";
+import EditProduct from "./pages/EditProduct";
+import QueryBox from "./pages/QueryBox";
+import DBConnection from "./utils/DBConnection";
 
-const Tab = createBottomTabNavigator()
+export const GlobalContext = React.createContext();
+
+const Tab = createBottomTabNavigator();
 const screenOptions = ({ route }) => {
-  const { colors } = useTheme()
+  const { colors } = useTheme();
 
   return {
     tabBarIcon: ({ focused, color, size }) => {
       const routeIcons = {
-        "AddProduct" : ["add","add-outline"],
-        "ListProduct": ["list","list-outline"],
-        "QueryBox"   : ["server","server-outline"],
-      }
+        AddProduct: ["add", "add-outline"],
+        ListProduct: ["list", "list-outline"],
+        QueryBox: ["server", "server-outline"],
+      };
 
-      const index = focused ? 0 : 1
-      const name = route.name ? route.name : ""
-      const icon = routeIcons[name][index]
+      const index = focused ? 0 : 1;
+      const name = route.name ? route.name : "";
+      const icon = routeIcons[name][index];
 
       return <Ionicons name={icon} size={size} color={color} />;
     },
     tabBarActiveTintColor: colors["primary"]["500"],
-    tabBarInactiveTintColor: 'gray',
-  }
-}
+    tabBarInactiveTintColor: "gray",
+  };
+};
 
 export default function App() {
+  const globals = {
+    db: new DBConnection("pos"),
+  };
+
   return (
     <NativeBaseProvider>
       <GlobalContext.Provider value={globals}>
         <NavigationContainer>
-          <Tab.Navigator  
+          <Tab.Navigator
             initialRouteName="SetupDB"
-            screenOptions={screenOptions}>
-            <Tab.Screen name="SetupDB" options={{headerShown: false, tabBarButton: (props) => false}} component={SetupDB} />
-            <Tab.Screen name="ListProduct" options={{headerShown: false}} component={ListProduct} />
-            <Tab.Screen name="AddProduct" options={{headerShown: false}} component={AddProduct} />
-            <Tab.Screen name="EditProduct" options={{headerShown: false, tabBarButton: (props) => false}} component={EditProduct} />
-            <Tab.Screen name="QueryBox" options={{headerShown: false}} component={QueryBox} />
+            screenOptions={screenOptions}
+          >
+            <Tab.Screen
+              name="SetupDB"
+              options={{ headerShown: false, tabBarButton: (props) => false }}
+              component={SetupDB}
+            />
+            <Tab.Screen
+              name="ListProduct"
+              options={{ headerShown: false }}
+              component={ListProduct}
+            />
+            <Tab.Screen
+              name="AddProduct"
+              options={{ headerShown: false }}
+              component={AddProduct}
+            />
+            <Tab.Screen
+              name="EditProduct"
+              options={{ headerShown: false, tabBarButton: (props) => false }}
+              component={EditProduct}
+            />
+            <Tab.Screen
+              name="QueryBox"
+              options={{ headerShown: false }}
+              component={QueryBox}
+            />
           </Tab.Navigator>
         </NavigationContainer>
       </GlobalContext.Provider>
     </NativeBaseProvider>
-  )
+  );
 }

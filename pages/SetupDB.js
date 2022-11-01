@@ -1,19 +1,12 @@
-import React, {useEffect, useContext} from "react"
-import { 
-  Box, 
-  Center, 
-  HStack, 
-  Heading,
-  VStack,
-  Spinner
-} from "native-base"
-import { StatusBar } from "react-native"
-import { useNavigation, CommonActions } from "@react-navigation/native"
-import { GlobalContext } from "../GlobalContext"
+import React, { useEffect, useContext } from "react";
+import { Box, Center, HStack, Heading, VStack, Spinner } from "native-base";
+import { StatusBar } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { GlobalContext } from "../App";
 
 export default function SetupDB() {
-  const navigation = useNavigation()
-  const { db } = useContext(GlobalContext)
+  const navigation = useNavigation();
+  const { db } = useContext(GlobalContext);
 
   useEffect(() => {
     async function setupDatabase() {
@@ -24,17 +17,18 @@ export default function SetupDB() {
           name TEXT NOT NULL,
           price REAL NOT NULL
         );  
-      `
+        
+      `;
       try {
-        await db.exec(createProductsTableQuery)  
-        navigation.navigate("ListProduct")
-      } catch(e) {
-        console.log(e)
+        await db.exec(createProductsTableQuery);
+        navigation.navigate("ListProduct");
+      } catch (e) {
+        console.log(e);
       }
     }
 
-    setupDatabase()
-  }, [])
+    setupDatabase();
+  }, []);
 
   return (
     <Box flex={1} marginTop={StatusBar.currentHeight + "px"}>
@@ -50,5 +44,5 @@ export default function SetupDB() {
         </HStack>
       </VStack>
     </Box>
-  )
+  );
 }
