@@ -19,8 +19,10 @@ export default function HideKeyboardEventListener(navigation) {
   };
 
   const removeKeyboardEventListener = () => {
-    Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
-    Keyboard.removeListener("keyboardDidHide", _keyboardDidHide);
+    Keyboard.removeAllListeners('keyboardDidShow');
+    Keyboard.removeAllListeners('keyboardDidHide');
+    // Keyboard.remove("keyboardDidShow", _keyboardDidShow);
+    // Keyboard.remove("keyboardDidHide", _keyboardDidHide);
   };
 
   return () => {

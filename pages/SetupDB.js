@@ -13,6 +13,7 @@ export default function SetupDB() {
       const createProductsTableQuery = `
         CREATE TABLE IF NOT EXISTS product (
           id INTEGER PRIMARY KEY,
+          photo TEXT,
           code TEXT NOT NULL UNIQUE,
           name TEXT NOT NULL,
           price REAL NOT NULL

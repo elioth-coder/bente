@@ -8,6 +8,7 @@ import {
   HStack,
   ScrollView,
   Icon,
+  Image,
 } from "native-base";
 import { StatusBar } from "react-native";
 import { Alert } from "react-native";
@@ -74,9 +75,11 @@ export default function ListProduct() {
         bgColor="muted.100"
         justifyContent="center"
       >
-        <Text w="28%" p="3" numberOfLines={1} ellipsizeMode="tail">
-          {product.code}
-        </Text>
+        <Center w="28%">
+          <Image source={{
+            uri: product.photo
+          }} alt="..." size="xs" />
+        </Center>
         <Text
           onPress={() => editProduct(product)}
           w="35%"
@@ -117,9 +120,9 @@ export default function ListProduct() {
           </Heading>
           <VStack>
             <HStack justifyContent="center">
-              <Text fontWeight="bold" w="28%" p="3">
-                CODE
-              </Text>
+              <Center fontWeight="bold" w="28%" p="3">
+                <Text fontWeight="bold">PHOTO</Text>
+              </Center>
               <Text fontWeight="bold" w="35%" p="3">
                 ITEM NAME
               </Text>
