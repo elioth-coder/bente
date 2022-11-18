@@ -98,9 +98,13 @@ export default function AddProduct() {
                 </Camera>
                 <Button onPress={takePhoto}>Take Photo</Button>
                 </>
-                : <Box alignItems="center">
-                  <Button onPress={() => setOpenCam(true)}>Open Camera</Button>
-                </Box>
+                : (hasCameraPermission && hasMediaLibraryPermission) 
+                  ? <Box alignItems="center">
+                      <Button onPress={() => setOpenCam(true)}>Open Camera</Button>
+                    </Box> 
+                  : <Box alignItems="center">
+                      <Text>No Camera or Media Library permission.</Text>
+                    </Box>
               }
             </VStack>
             <Input
