@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import {
   Box,
+  Text,
   Heading,
   VStack,
   Input,
@@ -103,7 +104,7 @@ export default function AddProduct() {
                       <Button onPress={() => setOpenCam(true)}>Open Camera</Button>
                     </Box> 
                   : <Box alignItems="center">
-                      <Text>No Camera or Media Library permission.</Text>
+                      <Text>No Camera or Media Library permission</Text>
                     </Box>
               }
             </VStack>
