@@ -14,10 +14,13 @@ import {
   useNavigation,
   useFocusEffect,
 } from "@react-navigation/native";
-import { GlobalContext } from "../App";
 import HideKeyboardEventListener from "../utils/HideKeyboardEventListener";
+import { useDispatch } from 'react-redux'
+import { update } from '../features/counter/productsSlice'
+import ProductsDatabase from "../databases/ProductsDatabase";
 
 export default function EditProduct() {
+  const dispatch = useDispatch()
   const navigation = useNavigation();
   useEffect(HideKeyboardEventListener(navigation), []);
 
@@ -35,16 +38,10 @@ export default function EditProduct() {
     }, [route])
   );
 
-  const { db } = useContext(GlobalContext);
-
   const updateProduct = async (id) => {
-    console.log("Clicked Update Product button.");
-
-    const sql = `UPDATE product SET code='${code}', name='${name}', price=${price}
-       WHERE id=${id}`;
-
     try {
-      await db.exec(sql);
+      let rowsAffected = ProductsDatabase.update({id, code, name, price});
+      dispatch(update({id, code, name, price}))
       alert("Successfully updated the product.");
       navigation.navigate("ListProduct");
     } catch (e) {

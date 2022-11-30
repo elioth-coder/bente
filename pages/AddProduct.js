@@ -11,13 +11,16 @@ import {
   Image
 } from "native-base";
 import { useNavigation } from "@react-navigation/native";
-import { Camera } from 'expo-camera';
+import { Camera, CameraType } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import { StatusBar } from "react-native";
-import { GlobalContext } from "../App";
 import HideKeyboardEventListener from "../utils/HideKeyboardEventListener";
+import { useDispatch } from 'react-redux'
+import { add } from '../features/counter/productsSlice'
+import ProductsDatabase from "../databases/ProductsDatabase";
 
 export default function AddProduct() {
+  const dispatch = useDispatch()
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -27,7 +30,6 @@ export default function AddProduct() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const navigation = useNavigation();
-  const { db } = useContext(GlobalContext);
 
   useEffect(HideKeyboardEventListener(navigation), []);
   useEffect(() => {
@@ -55,15 +57,10 @@ export default function AddProduct() {
   };
 
   const saveProduct = async () => {
-    console.log("Clicked Save Product button.");
-    console.log(photo);
-
-    const sql = `INSERT INTO product (photo, code, name, price) 
-       VALUES ('${photo}', '${code}','${name}',${price})`;
-
     try {
-      await db.exec(sql);
-      alert("Successfully added the product.");
+      const product = await ProductsDatabase.add({code, name, price, photo});
+      dispatch(add(product));
+      alert("Successfully save/added the product.");
       clearForm();
     } catch (e) {
       alert(e);
@@ -95,6 +92,7 @@ export default function AddProduct() {
               {(openCam) 
                 ? <>
                 <Camera ref={cameraRef} 
+                  type={CameraType.back}
                   style={{width: 300, height: 300}}>
                 </Camera>
                 <Button onPress={takePhoto}>Take Photo</Button>

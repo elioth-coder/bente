@@ -13,38 +13,22 @@ import {
 import { StatusBar } from "react-native";
 import { Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import { useSelector, useDispatch } from 'react-redux'
+import { remove } from '../features/counter/productsSlice'
 
-import { GlobalContext } from "../App";
 import generateUniqueKey from "../utils/generateUniqueKey";
+import ProductsDatabase from "../databases/ProductsDatabase";
 
 export default function ListProduct() {
+  const products = useSelector((state) => state.products)
+  const dispatch = useDispatch()
   const navigation = useNavigation();
-  const [products, setProducts] = useState([]);
-  const { db } = useContext(GlobalContext);
 
   const editProduct = (product) => {
     console.log(product);
     navigation.navigate("EditProduct", { ...product });
   };
-
-  const getProducts = async () => {
-    const sql = `SELECT * FROM product`;
-
-    try {
-      let items = await db.exec(sql);
-      setProducts(items);
-      console.log("Successfully got the products.");
-    } catch (e) {
-      alert(e);
-    }
-  };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      getProducts();
-    }, [])
-  );
 
   const confirmDelete = (id) => {
     Alert.alert("", "Delete this product?", [
@@ -54,13 +38,9 @@ export default function ListProduct() {
   };
 
   const deleteProduct = async (id) => {
-    const sql = `DELETE FROM product WHERE id=${id}`;
-
     try {
-      let rowsAffected = await db.exec(sql);
-      let items = products.filter((item) => item.id != id);
-
-      setProducts(items);
+      ProductsDatabase.remove(id);
+      dispatch(remove(id));
       console.log("Successfully deleted the product.");
     } catch (e) {
       alert(e);
@@ -73,8 +53,7 @@ export default function ListProduct() {
         borderBottomWidth="1"
         borderBottomColor="tertiary.200"
         bgColor="muted.100"
-        justifyContent="center"
-      >
+        justifyContent="center">
         <Center w="28%">
           <Image source={{
             uri: product.photo

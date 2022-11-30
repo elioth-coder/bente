@@ -4,16 +4,17 @@ import {
   Heading,
   VStack,
   TextArea,
-  ScrollView,
   HStack,
   Button,
 } from "native-base";
 import { StatusBar } from "react-native";
-import { GlobalContext } from "../App";
+import { Counter } from "../features/counter/Counter";
+import DBConnection from "../utils/DBConnection";
+
+const db = new DBConnection("pos");
 
 export default function QueryBox() {
   const [query, setQuery] = useState("");
-  const { db } = useContext(GlobalContext);
 
   const runQuery = async () => {
     console.log("Clicked Run Query button.");
@@ -31,34 +32,40 @@ export default function QueryBox() {
   };
 
   return (
-    <Box flex={1} marginTop={StatusBar.currentHeight + "px"}>
-      <ScrollView bgColor="white">
-        <Box p="3">
-          <Heading m="3" numberOfLines={1} ellipsizeMode="tail">
-            Enter Your Query
-          </Heading>
-          <VStack w="100%" p="3" space="5">
-            <TextArea
-              w="auto"
-              fontSize="lg"
-              h="60%"
-              numberOfLines={20}
-              bgColor="white"
-              value={query}
-              onChangeText={setQuery}
-              placeholder="Enter query."
-            />
-            <HStack justifyContent="flex-end" space={1}>
-              <Button size="lg" w="70px" onPress={clearQuery}>
-                Clear
-              </Button>
-              <Button size="lg" w="70px" onPress={runQuery}>
-                Run
-              </Button>
-            </HStack>
-          </VStack>
-        </Box>
-      </ScrollView>
+    <Box marginTop={StatusBar.currentHeight + "px"} bgColor="amber.200">
+      <Box p="3" bgColor="amber.100">
+        <Heading m="3" numberOfLines={1} ellipsizeMode="tail">
+          Counter Module
+        </Heading>
+        <VStack>
+          <Counter />
+        </VStack>
+      </Box>
+      <Box p="3" bgColor="amber.500">
+        <Heading m="3" numberOfLines={1} ellipsizeMode="tail">
+          Enter Your Query
+        </Heading>
+        <VStack w="100%" p="3" space="5">
+          <TextArea
+            w="auto"
+            fontSize="lg"
+            h="60%"
+            numberOfLines={20}
+            bgColor="white"
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Enter query."
+          />
+          <HStack justifyContent="flex-end" space={1}>
+            <Button size="lg" w="70px" onPress={clearQuery}>
+              Clear
+            </Button>
+            <Button size="lg" w="70px" onPress={runQuery}>
+              Run
+            </Button>
+          </HStack>
+        </VStack>          
+      </Box>
     </Box>
   );
 }

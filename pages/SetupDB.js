@@ -2,11 +2,27 @@ import React, { useEffect, useContext } from "react";
 import { Box, Center, HStack, Heading, VStack, Spinner } from "native-base";
 import { StatusBar } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { GlobalContext } from "../App";
+import { useDispatch } from 'react-redux'
+import { populate } from '../features/counter/productsSlice'
+import ProductsDatabase from "../databases/ProductsDatabase";
+import DBConnection from "../utils/DBConnection";
+
+const db = new DBConnection("pos");
 
 export default function SetupDB() {
+  const dispatch = useDispatch()
+
   const navigation = useNavigation();
-  const { db } = useContext(GlobalContext);
+
+  const getProducts = async () => {
+    try {
+      let items = await ProductsDatabase.getAll();
+      dispatch(populate(items));
+      console.log("Successfully got the products.");
+    } catch (e) {
+      alert(e);
+    }
+  };
 
   useEffect(() => {
     async function setupDatabase() {
@@ -29,6 +45,7 @@ export default function SetupDB() {
     }
 
     setupDatabase();
+    getProducts();
   }, []);
 
   return (

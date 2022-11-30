@@ -4,14 +4,15 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
+import { store } from './store'
+import { Provider } from 'react-redux'
+
 import SetupDB from "./pages/SetupDB";
 import ListProduct from "./pages/ListProduct";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
 import QueryBox from "./pages/QueryBox";
 import DBConnection from "./utils/DBConnection";
-
-export const GlobalContext = React.createContext();
 
 const Tab = createBottomTabNavigator();
 const screenOptions = ({ route }) => {
@@ -37,18 +38,13 @@ const screenOptions = ({ route }) => {
 };
 
 export default function App() {
-  const globals = {
-    db: new DBConnection("pos"),
-  };
-
   return (
     <NativeBaseProvider>
-      <GlobalContext.Provider value={globals}>
+      <Provider store={store}>
         <NavigationContainer>
           <Tab.Navigator
             initialRouteName="SetupDB"
-            screenOptions={screenOptions}
-          >
+            screenOptions={screenOptions}>
             <Tab.Screen
               name="SetupDB"
               options={{ headerShown: false, tabBarButton: (props) => false }}
@@ -76,7 +72,7 @@ export default function App() {
             />
           </Tab.Navigator>
         </NavigationContainer>
-      </GlobalContext.Provider>
+      </Provider>
     </NativeBaseProvider>
   );
 }
